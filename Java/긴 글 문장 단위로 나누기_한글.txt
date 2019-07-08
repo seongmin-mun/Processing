@@ -1,0 +1,24 @@
+public  static void main (String [] args) throws IOException{
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("파일 경로"), "해당 파일의 인코딩"));   //UTF-16LE
+
+        String s = null;
+        String Longline = "";
+        while((s=reader.readLine())!=null){
+            Longline = Longline + " " + s;
+        }
+
+        String [] sentence = Longline.replaceAll("\\s+"," ").split("(?<=\\.|\\?)(\\s|[ㄱ-ㅎ].*)");//(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)(\s|[A-Z].*)
+
+        for (String out : sentence){
+
+            out = out.trim();
+            out = out.replaceAll(" $","");
+            out = out.replaceAll("^ ","");
+            if(out.contains("\"")||out.contains("“")||out.contains("”")){
+                continue;
+            } else {
+                System.out.println(out.replaceAll("\\s+"," "));
+            }
+        }
+}

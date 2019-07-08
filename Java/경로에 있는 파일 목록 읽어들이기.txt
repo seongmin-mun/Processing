@@ -1,0 +1,13 @@
+public  static void main (String [] args) throws IOException{
+
+        String dirPath = "파일들이 있는 경로";
+        File dir = new File(dirPath);
+        File[] files = dir.listFiles();
+
+        for (int i = 0; i < files.length; i++) {
+
+            System.out.println(files[i]);
+            String path = files[i].toString();
+
+        }
+}

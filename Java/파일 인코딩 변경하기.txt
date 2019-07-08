@@ -1,0 +1,20 @@
+public  static void main (String [] args) throws IOException{
+
+            //https://docs.oracle.com/javase/1.5.0/docs/guide/intl/encoding.doc.html
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("파일 경로"), "해당 파일의 인코딩"));   //UTF-16LE
+
+            String s = null;
+
+            StringBuilder builder = new StringBuilder();
+
+            while((s=reader.readLine())!=null){
+                //System.out.println(s);
+                builder.append(s+"\n");
+            }
+            String fileName = "인코딩 변경된 파일을 저장할 경로";
+            BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName, true), "변경하길 원하는 인코딩")); //KSC5601 //UTF-8
+            fw.write(builder.toString());
+            fw.flush();
+            fw.close();
+}
