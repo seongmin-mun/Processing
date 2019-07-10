@@ -1,0 +1,55 @@
+public static String[] ja_target = {
+            "유비",
+            "조조"
+}
+
+public static String[] ja_source = {
+            "현덕",
+            "맹덕"
+}
+       
+
+public  static void main (String [] args) throws IOException{
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("파일 경로"), "해당 파일의 인코딩"));
+
+        String s = null;
+
+        StringBuilder builder = new StringBuilder();
+
+        HashMap<String, String> hochange = new HashMap<>();  //호, 인물 이름을 저장할 맵
+
+        for(int i = 0; i < people.ja_target.length; i++){
+            hochange.put(people.ja_source[i],people.ja_target[i]);   //ex 현덕, 유비 의 형태로 저장됨 
+        }
+        
+        while((s=reader.readLine())!=null){
+
+            String changed_s = "";  //가공될 문장을 작성할 문자열
+
+            String [] words = s.split(" ");
+
+            for(String word : words) {
+                String [] name = word.split("/");
+                if (hochange.containsKey(name[0])) {   //호를 가지고 있을 경우 
+                    changed_s = changed_s + word.replace(word,hochange.get(name[0])+"/NNP") + " ";   //호를 인물이름으로 변환
+                } else if (word.equals("손권/NNG")||word.equals("유비/NNG")||word.equals("조조/NNG")||word.equals("관우/NNG")||word.equals("장비/NNG")){  //5인물에 대해서 NNG로 태깅이 잘못 들어 갔을 경우 NNP로 변환
+                    changed_s = changed_s + word.replace("/NNG","/NNP") + " ";
+                } else {
+                    changed_s = changed_s + word + " ";
+                }
+            }
+            changed_s = changed_s.trim();    //앞, 뒤 빈 공간 제거
+            changed_s = changed_s.replaceAll(" $","");  //뒤에 있는 빈공간 제거
+            changed_s = changed_s.replaceAll("^ ","");  //앞에 있는 빈공간 제거
+            builder.append(changed_s+"\n");
+        }
+
+
+
+        String fileName = "저장할 파일명 및 경로";
+        BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName, false), "UTF-8")); //KSC5601 //UTF-8  //true덮어쓰기 //false새로쓰기
+        fw.write(builder.toString());
+        fw.flush();
+        fw.close();
+}
