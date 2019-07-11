@@ -1,32 +1,19 @@
 package processing.cooccurrence;
 
-import dictionary.people;
-import dictionary.tag;
-import processing.refinecorpus.functions.sorting;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class cooccurrence_parse {
-    public static HashMap<String, Integer> cooccurrence(String filename, String person, String vv_word) throws IOException {    //ÆÄÀÏ¸í ¹× °æ·Î, ÀÎ¹° ÀÌ¸§(ex; À¯ºñ)
+    public static HashMap<String, Integer> cooccurrence(String filename, String person, String vv_word) throws IOException {    //íŒŒì¼ëª… ë° ê²½ë¡œ, ì¸ë¬¼ ì´ë¦„(ex; ìœ ë¹„)
 
-        //µ¿½Ã ÃâÇö µ¥ÀÌÅÍ È®ÀÎ
-        //freq_verb_in_character: ÇØ´ç µ¿»ç°¡ ÇØ´ç ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., À¯ºñ´Â ¹°¾ú´Ù)
-        //freq_verb_not_in_character: ÇØ´ç µ¿»ç°¡ ÇØ´ç ÀÎ¹°ÀÌ ***¾Æ´Ñ*** ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., °ü¿ì´Â ¹°¾ú´Ù)
-        //freq_not_verb_in_character: ÇØ´ç µ¿»ç°¡ ***¾Æ´Ñ*** µ¿»ç°¡ ÇØ´ç ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., À¯ºñ´Â Àä´Ù)
-        //freq_not_verb_not_in_character: ÇØ´ç µ¿»ç°¡ ***¾Æ´Ñ*** µ¿»ç°¡ ÇØ´ç ÀÎ¹°ÀÌ ***¾Æ´Ñ*** ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., °ü¿ì´Â Àä´Ù)
+        //ë™ì‹œ ì¶œí˜„ ë°ì´í„° í™•ì¸
+        //freq_verb_in_character: í•´ë‹¹ ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ìœ ë¹„ëŠ” ë¬¼ì—ˆë‹¤)
+        //freq_verb_not_in_character: í•´ë‹¹ ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ì´ ***ì•„ë‹Œ*** ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ê´€ìš°ëŠ” ë¬¼ì—ˆë‹¤)
+        //freq_not_verb_in_character: í•´ë‹¹ ë™ì‚¬ê°€ ***ì•„ë‹Œ*** ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ìœ ë¹„ëŠ” ì¤ë‹¤)
+        //freq_not_verb_not_in_character: í•´ë‹¹ ë™ì‚¬ê°€ ***ì•„ë‹Œ*** ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ì´ ***ì•„ë‹Œ*** ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ê´€ìš°ëŠ” ì¤ë‹¤)
 
-        //ÃÖÁ¾ µ¥ÀÌÅÍ ¸ñ·Ï »ı¼º
+        //ìµœì¢… ë°ì´í„° ëª©ë¡ ìƒì„±
         HashMap<String, Integer> finalcount = new HashMap<String, Integer>();
 
 
-        //ÀÎ¹° »çÀü (ºĞ¼®ÀÇ ´ë»óÀÌ µÇ´Â ÀÎ¹° Á¦¿Ü)
+        //ì¸ë¬¼ ì‚¬ì „ (ë¶„ì„ì˜ ëŒ€ìƒì´ ë˜ëŠ” ì¸ë¬¼ ì œì™¸)
         HashMap<String, Integer> other_people = new HashMap<>();
 
         for(int i = 0; i < people.total_people.length; i++){
@@ -38,7 +25,7 @@ public class cooccurrence_parse {
         }
 
 
-        //¸ñÇ¥ µ¿»ç¿¡ ´ëÇÑ ¸®½ºÆ®
+        //ëª©í‘œ ë™ì‚¬ì— ëŒ€í•œ ë¦¬ìŠ¤íŠ¸
         HashMap<String, Integer> vv_list = new HashMap<String, Integer>();
 
         String [] target_vv = {vv_word};
@@ -47,7 +34,7 @@ public class cooccurrence_parse {
             vv_list.put(vv,0);
         }
 
-        //¹®Àå ¹Ş¾ÆµéÀÌ±â
+        //ë¬¸ì¥ ë°›ì•„ë“¤ì´ê¸°
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
 
         String s = null;
@@ -60,12 +47,12 @@ public class cooccurrence_parse {
         while((s=reader.readLine())!=null){
             String [] words = s.split(" ");
 
-            //1.freq_verb_in_character: ÇØ´ç µ¿»ç°¡ ÇØ´ç ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., À¯ºñ´Â ¹°¾ú´Ù)
+            //1.freq_verb_in_character: í•´ë‹¹ ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ìœ ë¹„ëŠ” ë¬¼ì—ˆë‹¤)
 
             boolean second_firstchecked = false;
             int firstnum = 0;
 
-            //¸ñÇ¥ ÀÎ¹°ÀÇ ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ëª©í‘œ ì¸ë¬¼ì˜ ì´ë¦„ì´ ë¬¸ì¥ì— ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             boolean firstchecked = false;
             for(String eachword : words){
                 String [] word = eachword.split("/");
@@ -74,7 +61,7 @@ public class cooccurrence_parse {
                 }
             }
 
-            //¸ñÇ¥ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖÀ» °æ¿ì ¸ñÇ¥ ´Ü¾î°¡ ¹®Àå¿¡ (¸î°³) ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ëª©í‘œì´ë¦„ì´ ë¬¸ì¥ì— ìˆì„ ê²½ìš° ëª©í‘œ ë‹¨ì–´ê°€ ë¬¸ì¥ì— (ëª‡ê°œ) ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             if(firstchecked == true){
                 for(String eachword : words){
                     if(vv_list.containsKey(eachword)) {
@@ -84,19 +71,19 @@ public class cooccurrence_parse {
                 }
             }
 
-            //freq_verb_in_character¿¡ ´ëÇÑ Ä«¿îÆ®¸¦ ¼öÇàÇÑ´Ù.
+            //freq_verb_in_characterì— ëŒ€í•œ ì¹´ìš´íŠ¸ë¥¼ ìˆ˜í–‰í•œë‹¤.
             if(second_firstchecked == true){
                 first_role = first_role+firstnum;
             }
-            //Ã¹¹øÂ° ±ÔÄ¢ ¿Ï·á
+            //ì²«ë²ˆì§¸ ê·œì¹™ ì™„ë£Œ
 
 
-            //2.freq_verb_not_in_character: ÇØ´ç µ¿»ç°¡ ÇØ´ç ÀÎ¹°ÀÌ ***¾Æ´Ñ*** ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., °ü¿ì´Â ¹°¾ú´Ù)
+            //2.freq_verb_not_in_character: í•´ë‹¹ ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ì´ ***ì•„ë‹Œ*** ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ê´€ìš°ëŠ” ë¬¼ì—ˆë‹¤)
 
             boolean second_secondchecked = false;
             int secondnum = 0;
 
-            //¸ñÇ¥ ÀÎ¹°À» Á¦¿ÜÇÑ ´Ù¸¥ ÀÎ¹°ÀÇ ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ëª©í‘œ ì¸ë¬¼ì„ ì œì™¸í•œ ë‹¤ë¥¸ ì¸ë¬¼ì˜ ì´ë¦„ì´ ë¬¸ì¥ì— ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             boolean secondchecked = false;
             for(String eachword : words){
                 String [] word = eachword.split("/");
@@ -105,7 +92,7 @@ public class cooccurrence_parse {
                 }
             }
 
-            //´Ù¸¥ »ç¶÷µé ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖÀ» °æ¿ì ¸ñÇ¥ ´Ü¾î°¡ ¹®Àå¿¡ (¸î°³) ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ë‹¤ë¥¸ ì‚¬ëŒë“¤ ì´ë¦„ì´ ë¬¸ì¥ì— ìˆì„ ê²½ìš° ëª©í‘œ ë‹¨ì–´ê°€ ë¬¸ì¥ì— (ëª‡ê°œ) ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             if(secondchecked == true){
                 for(String eachword : words){
                     if(vv_list.containsKey(eachword)) {
@@ -115,20 +102,20 @@ public class cooccurrence_parse {
                 }
             }
 
-            //freq_verb_not_in_character¿¡ ´ëÇÑ Ä«¿îÆ®¸¦ ¼öÇàÇÑ´Ù.
+            //freq_verb_not_in_characterì— ëŒ€í•œ ì¹´ìš´íŠ¸ë¥¼ ìˆ˜í–‰í•œë‹¤.
             if(second_secondchecked == true){
                 second_role = second_role+secondnum;
             }
-            //µÎ¹øÂ° ±ÔÄ¢ ¿Ï·á
+            //ë‘ë²ˆì§¸ ê·œì¹™ ì™„ë£Œ
 
 
 
-            //3.freq_not_verb_in_character: ÇØ´ç µ¿»ç°¡ ***¾Æ´Ñ*** µ¿»ç°¡ ÇØ´ç ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., À¯ºñ´Â Àä´Ù)
+            //3.freq_not_verb_in_character: í•´ë‹¹ ë™ì‚¬ê°€ ***ì•„ë‹Œ*** ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ìœ ë¹„ëŠ” ì¤ë‹¤)
 
             boolean second_thirdchecked = false;
             int thirdnum = 0;
 
-            //¸ñÇ¥ ÀÎ¹°ÀÇ ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ëª©í‘œ ì¸ë¬¼ì˜ ì´ë¦„ì´ ë¬¸ì¥ì— ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             boolean thirdchecked = false;
             for(String eachword : words){
                 String [] word = eachword.split("/");
@@ -137,7 +124,7 @@ public class cooccurrence_parse {
                 }
             }
 
-            //¸ñÇ¥ ÀÎ¹°ÀÇ ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖÀ» °æ¿ì ¸ñÇ¥ ´Ü¾î¸¦ Á¦¿ÜÇÑ ´Ù¸¥ ´Ü¾î°¡ ¹®Àå¿¡ (¸î°³) ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ëª©í‘œ ì¸ë¬¼ì˜ ì´ë¦„ì´ ë¬¸ì¥ì— ìˆì„ ê²½ìš° ëª©í‘œ ë‹¨ì–´ë¥¼ ì œì™¸í•œ ë‹¤ë¥¸ ë‹¨ì–´ê°€ ë¬¸ì¥ì— (ëª‡ê°œ) ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             if(thirdchecked == true){
                 for(String eachword : words){
                     if(vv_list.containsKey(eachword)) {
@@ -149,19 +136,19 @@ public class cooccurrence_parse {
                 }
             }
 
-            //freq_not_verb_in_character¿¡ ´ëÇÑ Ä«¿îÆ®¸¦ ¼öÇàÇÑ´Ù.
+            //freq_not_verb_in_characterì— ëŒ€í•œ ì¹´ìš´íŠ¸ë¥¼ ìˆ˜í–‰í•œë‹¤.
             if(second_thirdchecked == true){
                 third_role = third_role+thirdnum;
             }
-            //¼¼¹øÂ° ±ÔÄ¢ ¿Ï·á
+            //ì„¸ë²ˆì§¸ ê·œì¹™ ì™„ë£Œ
 
 
-            //4.freq_not_verb_not_in_character: ÇØ´ç µ¿»ç°¡ ***¾Æ´Ñ*** µ¿»ç°¡ ÇØ´ç ÀÎ¹°ÀÌ ***¾Æ´Ñ*** ÀÎ¹°°ú °°Àº ¹®Àå¿¡ »ç¿ëµÈ ºóµµ (e.g., °ü¿ì´Â Àä´Ù)
+            //4.freq_not_verb_not_in_character: í•´ë‹¹ ë™ì‚¬ê°€ ***ì•„ë‹Œ*** ë™ì‚¬ê°€ í•´ë‹¹ ì¸ë¬¼ì´ ***ì•„ë‹Œ*** ì¸ë¬¼ê³¼ ê°™ì€ ë¬¸ì¥ì— ì‚¬ìš©ëœ ë¹ˆë„ (e.g., ê´€ìš°ëŠ” ì¤ë‹¤)
 
             boolean second_fourthchecked = false;
             int fourthnum = 0;
 
-            //¸ñÇ¥ ÀÎ¹°À» Á¦¿ÜÇÑ ´Ù¸¥ ÀÎ¹°ÀÇ ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ëª©í‘œ ì¸ë¬¼ì„ ì œì™¸í•œ ë‹¤ë¥¸ ì¸ë¬¼ì˜ ì´ë¦„ì´ ë¬¸ì¥ì— ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             boolean fourthchecked = false;
             for(String eachword : words){
                 String [] word = eachword.split("/");
@@ -170,7 +157,7 @@ public class cooccurrence_parse {
                 }
             }
 
-            //´Ù¸¥ »ç¶÷µé ÀÌ¸§ÀÌ ¹®Àå¿¡ ÀÖÀ» °æ¿ì ¸ñÇ¥ ´Ü¾î¸¦ Á¦¿ÜÇÑ ´Ù¸¥ ´Ü¾î°¡ ¹®Àå¿¡ (¸î°³) ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+            //ë‹¤ë¥¸ ì‚¬ëŒë“¤ ì´ë¦„ì´ ë¬¸ì¥ì— ìˆì„ ê²½ìš° ëª©í‘œ ë‹¨ì–´ë¥¼ ì œì™¸í•œ ë‹¤ë¥¸ ë‹¨ì–´ê°€ ë¬¸ì¥ì— (ëª‡ê°œ) ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
             if(fourthchecked == true){
                 for(String eachword : words){
                     if(vv_list.containsKey(eachword)) {
@@ -182,11 +169,11 @@ public class cooccurrence_parse {
                 }
             }
 
-            //freq_not_verb_in_character¿¡ ´ëÇÑ Ä«¿îÆ®¸¦ ¼öÇàÇÑ´Ù.
+            //freq_not_verb_in_characterì— ëŒ€í•œ ì¹´ìš´íŠ¸ë¥¼ ìˆ˜í–‰í•œë‹¤.
             if(second_fourthchecked == true){
                 fourth_role = fourth_role+fourthnum;
             }
-            //³×¹øÂ° ±ÔÄ¢ ¿Ï·á
+            //ë„¤ë²ˆì§¸ ê·œì¹™ ì™„ë£Œ
 
         }
 
@@ -211,30 +198,16 @@ public class cooccurrence_parse {
 
 
 
-//Delta-p»ç¿ëÇÏ±â
+//Delta-pì‚¬ìš©í•˜ê¸°
 
 package main;
-
-import dictionary.people;
-import processing.morpheme.eunjeon_ko;
-import processing.refinecorpus.countingtypesbycorpus_S3;
-import processing.refinecorpus.functions.sorting;
-import processing.refinecorpus.refinethecorpus_S2;
-
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class systemrun {
     public static void main (String [] args) throws IOException {
 
         int book_num = 1;  //1-10
-        String [] person_name = {"À¯ºñ","Á¶Á¶"};
-        String [] target_vv_words = {"¹°/VV","µè/VV","Ä¡/VV"};
+        String [] person_name = {"ìœ ë¹„","ì¡°ì¡°"};
+        String [] target_vv_words = {"ë¬¼/VV","ë“£/VV","ì¹˜/VV"};
 
         for(String person : person_name){
             System.out.print(person+" : ");
