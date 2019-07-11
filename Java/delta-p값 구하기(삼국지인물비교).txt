@@ -1,0 +1,257 @@
+package processing.cooccurrence;
+
+import dictionary.people;
+import dictionary.tag;
+import processing.refinecorpus.functions.sorting;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class cooccurrence_parse {
+    public static HashMap<String, Integer> cooccurrence(String filename, String person, String vv_word) throws IOException {    //파일명 및 경로, 인물 이름(ex; 유비)
+
+        //동시 출현 데이터 확인
+        //freq_verb_in_character: 해당 동사가 해당 인물과 같은 문장에 사용된 빈도 (e.g., 유비는 물었다)
+        //freq_verb_not_in_character: 해당 동사가 해당 인물이 ***아닌*** 인물과 같은 문장에 사용된 빈도 (e.g., 관우는 물었다)
+        //freq_not_verb_in_character: 해당 동사가 ***아닌*** 동사가 해당 인물과 같은 문장에 사용된 빈도 (e.g., 유비는 잤다)
+        //freq_not_verb_not_in_character: 해당 동사가 ***아닌*** 동사가 해당 인물이 ***아닌*** 인물과 같은 문장에 사용된 빈도 (e.g., 관우는 잤다)
+
+        //최종 데이터 목록 생성
+        HashMap<String, Integer> finalcount = new HashMap<String, Integer>();
+
+
+        //인물 사전 (분석의 대상이 되는 인물 제외)
+        HashMap<String, Integer> other_people = new HashMap<>();
+
+        for(int i = 0; i < people.total_people.length; i++){
+            if(people.total_people[i].equals(person)){
+                continue;
+            } else {
+                other_people.put(people.total_people[i],0);
+            }
+        }
+
+
+        //목표 동사에 대한 리스트
+        HashMap<String, Integer> vv_list = new HashMap<String, Integer>();
+
+        String [] target_vv = {vv_word};
+
+        for(String vv : target_vv){
+            vv_list.put(vv,0);
+        }
+
+        //문장 받아들이기
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+
+        String s = null;
+
+        int first_role = 0;
+        int second_role = 0;
+        int third_role = 0;
+        int fourth_role = 0;
+
+        while((s=reader.readLine())!=null){
+            String [] words = s.split(" ");
+
+            //1.freq_verb_in_character: 해당 동사가 해당 인물과 같은 문장에 사용된 빈도 (e.g., 유비는 물었다)
+
+            boolean second_firstchecked = false;
+            int firstnum = 0;
+
+            //목표 인물의 이름이 문장에 있는지 확인한다.
+            boolean firstchecked = false;
+            for(String eachword : words){
+                String [] word = eachword.split("/");
+                if(word[0].equals(person)) {
+                    firstchecked = true;
+                }
+            }
+
+            //목표이름이 문장에 있을 경우 목표 단어가 문장에 (몇개) 있는지 확인한다.
+            if(firstchecked == true){
+                for(String eachword : words){
+                    if(vv_list.containsKey(eachword)) {
+                        second_firstchecked = true;
+                        firstnum++;
+                    }
+                }
+            }
+
+            //freq_verb_in_character에 대한 카운트를 수행한다.
+            if(second_firstchecked == true){
+                first_role = first_role+firstnum;
+            }
+            //첫번째 규칙 완료
+
+
+            //2.freq_verb_not_in_character: 해당 동사가 해당 인물이 ***아닌*** 인물과 같은 문장에 사용된 빈도 (e.g., 관우는 물었다)
+
+            boolean second_secondchecked = false;
+            int secondnum = 0;
+
+            //목표 인물을 제외한 다른 인물의 이름이 문장에 있는지 확인한다.
+            boolean secondchecked = false;
+            for(String eachword : words){
+                String [] word = eachword.split("/");
+                if(other_people.containsKey(word[0])) {
+                    secondchecked = true;
+                }
+            }
+
+            //다른 사람들 이름이 문장에 있을 경우 목표 단어가 문장에 (몇개) 있는지 확인한다.
+            if(secondchecked == true){
+                for(String eachword : words){
+                    if(vv_list.containsKey(eachword)) {
+                        second_secondchecked = true;
+                        secondnum++;
+                    }
+                }
+            }
+
+            //freq_verb_not_in_character에 대한 카운트를 수행한다.
+            if(second_secondchecked == true){
+                second_role = second_role+secondnum;
+            }
+            //두번째 규칙 완료
+
+
+
+            //3.freq_not_verb_in_character: 해당 동사가 ***아닌*** 동사가 해당 인물과 같은 문장에 사용된 빈도 (e.g., 유비는 잤다)
+
+            boolean second_thirdchecked = false;
+            int thirdnum = 0;
+
+            //목표 인물의 이름이 문장에 있는지 확인한다.
+            boolean thirdchecked = false;
+            for(String eachword : words){
+                String [] word = eachword.split("/");
+                if(word[0].equals(person)) {
+                    thirdchecked = true;
+                }
+            }
+
+            //목표 인물의 이름이 문장에 있을 경우 목표 단어를 제외한 다른 단어가 문장에 (몇개) 있는지 확인한다.
+            if(thirdchecked == true){
+                for(String eachword : words){
+                    if(vv_list.containsKey(eachword)) {
+                        continue;
+                    } else if (eachword.contains("VV")) {
+                        second_thirdchecked = true;
+                        thirdnum++;
+                    }
+                }
+            }
+
+            //freq_not_verb_in_character에 대한 카운트를 수행한다.
+            if(second_thirdchecked == true){
+                third_role = third_role+thirdnum;
+            }
+            //세번째 규칙 완료
+
+
+            //4.freq_not_verb_not_in_character: 해당 동사가 ***아닌*** 동사가 해당 인물이 ***아닌*** 인물과 같은 문장에 사용된 빈도 (e.g., 관우는 잤다)
+
+            boolean second_fourthchecked = false;
+            int fourthnum = 0;
+
+            //목표 인물을 제외한 다른 인물의 이름이 문장에 있는지 확인한다.
+            boolean fourthchecked = false;
+            for(String eachword : words){
+                String [] word = eachword.split("/");
+                if(other_people.containsKey(word[0])) {
+                    fourthchecked = true;
+                }
+            }
+
+            //다른 사람들 이름이 문장에 있을 경우 목표 단어를 제외한 다른 단어가 문장에 (몇개) 있는지 확인한다.
+            if(fourthchecked == true){
+                for(String eachword : words){
+                    if(vv_list.containsKey(eachword)) {
+                        continue;
+                    } else if (eachword.contains("VV")) {
+                        second_fourthchecked = true;
+                        fourthnum++;
+                    }
+                }
+            }
+
+            //freq_not_verb_in_character에 대한 카운트를 수행한다.
+            if(second_fourthchecked == true){
+                fourth_role = fourth_role+fourthnum;
+            }
+            //네번째 규칙 완료
+
+        }
+
+        finalcount.put("freq_verb_in_character",first_role);
+        finalcount.put("freq_verb_not_in_character",second_role);
+        finalcount.put("freq_not_verb_in_character",third_role);
+        finalcount.put("freq_not_verb_not_in_character",fourth_role);
+
+        return finalcount;
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+//Delta-p사용하기
+
+package main;
+
+import dictionary.people;
+import processing.morpheme.eunjeon_ko;
+import processing.refinecorpus.countingtypesbycorpus_S3;
+import processing.refinecorpus.functions.sorting;
+import processing.refinecorpus.refinethecorpus_S2;
+
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class systemrun {
+    public static void main (String [] args) throws IOException {
+
+        int book_num = 1;  //1-10
+        String [] person_name = {"유비","조조"};
+        String [] target_vv_words = {"물/VV","듣/VV","치/VV"};
+
+        for(String person : person_name){
+            System.out.print(person+" : ");
+            for(String vvword : target_vv_words){
+                System.out.println(vvword);
+
+                HashMap<String, Integer> finallist = processing.cooccurrence.cooccurrence_parse.cooccurrence("./Data/AfterMorpheme_ho_changed/ThreeKingdom_"+book_num+".txt",person, vvword);
+
+                System.out.println("freq_verb_in_character : "+finallist.get("freq_verb_in_character"));
+                System.out.println("freq_verb_not_in_character : "+finallist.get("freq_verb_not_in_character"));
+                System.out.println("freq_not_verb_in_character : "+finallist.get("freq_not_verb_in_character"));
+                System.out.println("freq_not_verb_not_in_character : "+finallist.get("freq_not_verb_not_in_character"));
+
+            }
+
+
+        }
+
+    }
+}
