@@ -1,0 +1,16 @@
+package Main;
+
+import Processing.XmlExtraction;
+import Sejong.Sentence_confirm;
+
+import java.io.*;
+
+public class MainRun {
+    public static void main (String [] args) throws Exception {
+        
+        //Json파일 확인하기
+        Processing.Jsonframe_read.jsonread("./data/caseframe/Handic_out(json)/Test.json");
+
+
+    }
+}

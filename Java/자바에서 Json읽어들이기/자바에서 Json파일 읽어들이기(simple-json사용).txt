@@ -1,0 +1,84 @@
+package Processing;
+
+import java.io.IOException;
+import java.io.FileReader;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.*;
+
+public class Jsonframe_read {
+    public static void jsonread(String filename) throws Exception {
+        // https://www.geeksforgeeks.org/parse-json-java/
+        Object obj = new JSONParser().parse(new FileReader(filename));
+
+        JSONArray ja_words = (JSONArray) obj;
+
+        Iterator itr_words = ja_words.iterator();
+
+        //배열(단어)을 하나씩 읽어들인다.
+        while (itr_words.hasNext())
+        {
+
+            String targetword = "";
+            String framecontent = "";
+            String caseframe = "";
+
+            Iterator<Map.Entry> itr_words_inner = ((Map) itr_words.next()).entrySet().iterator();
+            while (itr_words_inner.hasNext()) {
+
+
+                Map.Entry pair_words = itr_words_inner.next();
+
+                //배열의 기준이 되는 단어 정보를 저장한다.
+                if(pair_words.getKey().equals("word")){
+                    targetword = pair_words.getValue().toString();
+                }
+                //프레임이 나올경우 배열로 변환하여 읽어들인다.
+                if(pair_words.getKey().equals("frames")){
+                    JSONArray ja_frames = (JSONArray) pair_words.getValue();
+
+                    Iterator itr_frames = ja_frames.iterator();
+
+                    while (itr_frames.hasNext())
+                    {
+                        Iterator<Map.Entry> itr_frames_inner = ((Map) itr_frames.next()).entrySet().iterator();
+                        while (itr_frames_inner.hasNext()) {
+                            Map.Entry pair_frames = itr_frames_inner.next();
+
+                            //해당 용언에 대한 격틀만 따로 저장
+                            if(pair_frames.getKey().equals("frame")){
+                                caseframe = pair_frames.getValue().toString();
+                            }
+                            framecontent = framecontent + pair_frames.getKey() + " : " + pair_frames.getValue();
+                            //System.out.println(pair_frames.getKey() + " : " + pair_frames.getValue());
+                        }
+                    }
+
+                }
+
+            }
+
+            System.out.println("Targetword : " + targetword);
+            //System.out.println("framecontent : " + framecontent);
+            System.out.println("caseframe : " + caseframe);
+
+        }
+
+
+        //기본틀
+//        while (itr_words.hasNext())
+//        {
+//            Iterator<Map.Entry> itr_words_inner = ((Map) itr_words.next()).entrySet().iterator();
+//            while (itr_words_inner.hasNext()) {
+//                Map.Entry pair = itr_words_inner.next();
+//                System.out.println(pair.getKey() + " : " + pair.getValue());
+//            }
+//        }
+
+
+
+    }
+}
