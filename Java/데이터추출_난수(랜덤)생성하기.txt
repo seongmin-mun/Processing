@@ -1,0 +1,26 @@
+package Sejong;
+
+import java.io.IOException;
+import java.util.Random;
+
+public class Sentence_5000 {
+    public static void count_5000(int num) throws IOException {
+        Random ran = new Random();
+        System.out.println(ran.nextInt(num));
+
+        double ranval = Math.random();
+        System.out.println((int)(ranval*num)+1);
+    }
+}
+
+
+
+
+public class MainRun {
+    public static void main (String [] args) throws Exception {
+        
+        Sentence_5000.count_5000(1000);
+
+
+    }
+}
