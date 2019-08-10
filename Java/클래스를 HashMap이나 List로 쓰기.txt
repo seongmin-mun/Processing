@@ -1,0 +1,33 @@
+package Processing;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Jsonframe_read_2step {
+    public static HashMap<String, String> json_hashmap() throws IOException {
+        
+        return a;
+    }
+
+    public static List<String> json_list() throws IOException {
+
+        return a;
+    }
+}
+
+public class systemrun {
+    public static void main(String[] args) throws IOException {
+
+        List<String> data = Jsonframe_read_2step.json_hashmap();
+        for(String out : data){
+            
+        }
+
+        HashMap<String, String> hashdata = Jsonframe_read_2step.json_hashmap();
+        for (Map.Entry<String, Integer> entry : hashdata.entrySet()) {
+            System.out.println(entry.getKey()+entry.getValue());
+        }
+    }
+}
