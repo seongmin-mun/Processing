@@ -1,0 +1,50 @@
+
+#초기 빈도수에 따라 인풋 데이터 생성하기
+
+import random
+
+#빈 리스트 생성 -> 총 빈도의 합
+initialList = []
+
+#초기 구조별 빈도수의 총합
+sizenum = 6777
+
+#빈 초기 리스트에 1부터 10929까지 숫자를 입력
+for x in range(0,sizenum):
+    initialList.append(x)
+
+#추가 정보 : 각 구조별 인풋의 양
+input_freq = [1773,51,2,1,2294,1858,380,403,15]
+input_construction = ["Canonical_active_transitive ### N_1_i/ka_1&actor_1_nominative_1 N_2_(l)ul_2&undergoer_2_accusative_2 V_3&action_3",
+"Scrambled_active_transitive ### N_1_(l)ul_1&undergoer_1_accusative_1 N_2_i/ka_2&actor_2_nominative_2 V_3&action_3",
+"Canonical_suffixal_passive ### N_1_i/ka_1&undergoer_1_nominative_1 N_2_eykey/hanthey_2&actor_2_dative_2 V_i/hi/li/ki_3&action_psv_3",
+"Scrambled_suffixal_passive ### N_1_eykey/hanthey_1&actor_1_dative_1 N_2_i/ka_2&undergoer_2_nominative_2 V_i/hi/li/ki_3&action_psv_3",
+"Oneargument_active_NOM ### N_1_i/ka_1&actor_1_nominative_1 V_2&action_2",
+"Oneargument_active_ACC ### N_1_(l)ul_1&undergoer_1_accusative_1 V_2&action_2",
+"Oneargument_active_DAT ### N_1_eykey/hanthey_1&recipient_1_dative_1 V_2&action_2",
+"Oneargument_passive_NOM ### N_1_i/ka_1&undergoer_1_nominative_1 V_i/hi/li/ki_2&action_psv_2",
+"Oneargument_passive_DAT ### N_1_eykey/hanthey_1&actor_1_dative_1 V_i/hi/li/ki_2&action_psv_2"]
+
+#인풋 데이터를 만들기 위한 사전 -> 랜덤으로 부여된 숫자가 '키'값이 되고 각 숫자는 구조의 이름을 '값'으로 가진다.
+input_dic = {}
+
+#각 구조를 초기 빈도만큼 넣어주는 부분
+for x in range(0,len(input_freq)):
+
+    #초기 리스트의 크기에서 랜덤하게 숫자를 뽑는다. 뽑힌 숫자의 위치에 있는 숫자를 인풋 사전에 '키'로 전달하고, 현재 구조 값을 '값'으로 전달한다.
+    for y in range(0, input_freq[x]):
+
+        #랜덤하게 숫자를 뽑는다.
+        num = random.randrange(0, len(initialList))
+        #인풋 사전에 '키'값과 '값'을 넘겨준다.
+        input_dic[str(initialList[num])] = input_construction[x]
+
+        #리스트의 크기와 제거된 숫자를 확인하는 부분
+        #print("len", len(initialList))
+        #print(initialList[num])
+
+        #뽑힌 숫자를 초기 리스트에서 제거함 (리스트의 크기가 점점 줄어든다.)
+        initialList.remove(initialList[num])
+
+#데이터 확인: 0부터 10928까지가 '키'값으로 들어감
+#print(input_dic['10928'])

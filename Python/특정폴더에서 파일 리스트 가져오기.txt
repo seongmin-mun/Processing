@@ -1,0 +1,18 @@
+#특정폴더에서 파일 리스트 가져오기
+# https://ahoa.tistory.com/16
+
+import os
+
+#설정한 경로에 포함된 파일 및 폴더의 리스트를 생성
+dirpath = '../data/input/train/Ey'
+filelist = os.listdir(dirpath)
+
+#분석에 필요한 파일만을 추리기
+neededfilelist = []
+
+#'.csv'라는 단서를 기반으로 파일 추리기
+for x in filelist:
+    if x.find('.csv')==-1:    #java에서 contains같은 역활
+        continue
+    else:
+        neededfilelist.append(x)
