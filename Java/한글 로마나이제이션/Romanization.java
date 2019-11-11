@@ -14,7 +14,7 @@ public class Romanization {
 
         String trans_word = "";
 
-        // typo스트링의 글자수 만큼 list에 담아둡니다.
+        // typo스트링의 글자수 만큼 list에 담기
         for (int i = 0; i < typo.length(); i++) {
             String one_word = "";
             char comVal = (char) (typo.charAt(i)-0xAC00);
@@ -25,7 +25,7 @@ public class Romanization {
                 // 초성만 입력 했을 시엔 초성은 무시해서 List에 추가합니다.
                 char uniVal = (char)comVal;
 
-                // 유니코드 표에 맞추어 초성 중성 종성을 분리합니다..
+                // 유니코드 표에 맞추어 초성 중성 종성을 분리
                 char cho = (char) ((((uniVal - (uniVal % 28)) / 28) / 21) + 0x1100);
                 char jung = (char) ((((uniVal - (uniVal % 28)) / 28) % 21) + 0x1161);
                 char jong = (char) ((uniVal % 28) + 0x11a7);
