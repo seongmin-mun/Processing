@@ -1,6 +1,6 @@
 package Main;
 
-import Processing.Visualization.Romanization;
+import Processing.Romanization;
 
 public class MainRun {
     public static void main (String [] args) throws Exception {
