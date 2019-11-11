@@ -12,18 +12,18 @@ public class Romanization {
 
         String trans_word = "";
 
-        // typo스트링의 글자수 만큼 list에 담기
+        // typo스트링의 글자 수만큼 list에 담기
         for (int i = 0; i < typo.length(); i++) {
             String one_word = "";
             char comVal = (char) (typo.charAt(i)-0xAC00);
 
             if (comVal >= 0 && comVal <= 11172){
-                // 한글일경우
+                // 한글일 경우
 
-                // 초성만 입력 했을 시엔 초성은 무시해서 List에 추가합니다.
+                // 초성만 입력했을 경우 초성은 무시하고 List에 추가
                 char uniVal = (char)comVal;
 
-                // 유니코드 표에 맞추어 초성 중성 종성을 분리
+                // 유니코드 표에 맞추어 초성, 중성, 종성을 분리
                 char cho = (char) ((((uniVal - (uniVal % 28)) / 28) / 21) + 0x1100);
                 char jung = (char) ((((uniVal - (uniVal % 28)) / 28) % 21) + 0x1161);
                 char jong = (char) ((uniVal % 28) + 0x11a7);
@@ -63,7 +63,7 @@ public class Romanization {
                 }
 
             } else {
-                // 한글이 아닐경우
+                // 한글이 아닐 경우
                 comVal = (char) (comVal+0xAC00);
                 one_word = one_word+comVal;
             }
