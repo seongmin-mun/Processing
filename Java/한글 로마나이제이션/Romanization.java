@@ -1,5 +1,3 @@
-package Processing.Visualization;
-
 import Dictionary.Hangul_jamo;
 import java.io.IOException;
 
