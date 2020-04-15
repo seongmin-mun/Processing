@@ -1,0 +1,9 @@
+wordlist = ["N&i/ka", "undergoer&nom", "N&eykey/hanthey", "actor&dat", "V&i/hi/li/ki", "action&psv"]
+
+def getNGrams(wordlist, n):
+    ngrams = []
+    for i in range(len(wordlist)-(n-1)):
+        ngrams.append(wordlist[i:i+n])
+    return ngrams
+
+print(getNGrams(wordlist, 2))
