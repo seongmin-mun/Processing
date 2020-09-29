@@ -1,0 +1,21 @@
+ConcordanceSentence with Ngram
+
+
+sentence = "Hi I am Seongmin Mun Nice to meet you what is your name"
+keyword = "Mun"
+rangeNum = 5
+
+def KeywordBasedNgram(sentence, keyword, rangeNum):
+    sentenceList = sentence.split(" ")
+    keywordIndex = sentenceList.index(keyword)
+
+    numList = []
+    for i in range(keywordIndex - rangeNum, keywordIndex + rangeNum + 1):
+        numList.append(i)
+
+    finalSentence = ""
+    for i in range(0, len(sentenceList)):
+        if i in numList:
+            finalSentence = finalSentence + sentenceList[i] + " "
+    finalSentence = finalSentence.strip()
+    return finalSentence
